@@ -46,11 +46,10 @@ from Screens.Screen import Screen
 from Screens.Setup import Setup
 from Tools.Directories import fileExists, isPluginInstalled, resolveFilename, SCOPE_CURRENT_SKIN
 from Components.Harddisk import harddiskmanager
-from Tools.Hex2strColor import Hex2strColor
 from Tools.LoadPixmap import LoadPixmap
 from Tools import Notifications
 
-from enigma import BT_KEEP_ASPECT_RATIO, BT_SCALE, eListboxPythonMultiContent, ePicLoad, eServiceReference, eTimer, gFont, iPlayableService
+from enigma import BT_KEEP_ASPECT_RATIO, BT_SCALE, eListboxPythonMultiContent, ePicLoad, eServiceReference, eTimer, gFont, iPlayableService, gRGB
 
 import os
 from gettext import dngettext
@@ -63,6 +62,9 @@ from twisted.internet import threads  # for fetching posters
 import requests
 
 DATA_FOLDER = ""
+
+def Hex2strColor(s):
+	return gRGB(int(s[1:], 0x10))
 
 
 class MountChoices:
@@ -78,7 +80,7 @@ class MountChoices:
 		for p in harddiskmanager.getMountedPartitions():
 			if os.path.exists(p.mountpoint):
 				d = os.path.normpath(p.mountpoint)
-				if p.mountpoint != "/":
+				if p.mountpoint != "/" and "autofs" not in p.mountpoint and "net" not in p.mountpoint:
 					choices.append((p.mountpoint, d))
 		choices.sort()
 		return choices
